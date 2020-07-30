@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="PluginNs.Views.CanvasView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PluginNs.Views"
+             mc:Ignorable="d" x:ClassModifier="internal"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border>
+        <Grid>
+            <Image Source="{Binding OverlayBitmap}" Stretch="None" Width="{Binding OverlayBitmap.Width}" Height="{Binding OverlayBitmap.Height}">
+                <Image.RenderTransform>
+                    <RotateTransform Angle="{Binding Angle}" CenterX="{Binding CenterX}" CenterY="{Binding CenterY}" />
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
+    </Border>
+</UserControl>
