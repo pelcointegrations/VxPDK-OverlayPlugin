@@ -143,24 +143,39 @@ namespace PluginNs.Services.CanvasOverlay
 
         private void DrawRectangle(RectangleShape shape)
         {
-            var topLeft = new Point(shape.TopLeft.X * RightSideUpWidth, shape.TopLeft.Y * RightSideUpHeight);
-            var bottomRight = new Point(shape.BottomRight.X * RightSideUpWidth, shape.BottomRight.Y * RightSideUpHeight);
+            // Decide where to draw the rect considering dptz
+            var reqTopLeft = new Point(shape.TopLeft.X * RightSideUpWidth, shape.TopLeft.Y * RightSideUpHeight);
+            var reqBottomRight = new Point(shape.BottomRight.X * RightSideUpWidth, shape.BottomRight.Y * RightSideUpHeight);
+            var reqRect = new Rect(reqTopLeft, reqBottomRight);
 
-            _canvasViewModel.OverlayBitmap.DrawRectangle(
-                (int)topLeft.X,
-                (int)topLeft.Y,
-                (int)bottomRight.X,
-                (int)bottomRight.Y,
-                shape.BorderColor);
+            var dptzTopLeft = new Point(_normalizedDptzWindow.TopLeft.X * RightSideUpWidth, _normalizedDptzWindow.TopLeft.Y * RightSideUpHeight);
+            var dptzBottomRight = new Point(_normalizedDptzWindow.BottomRight.X * RightSideUpWidth, _normalizedDptzWindow.BottomRight.Y * RightSideUpHeight);
+            var dptzRect = new Rect(dptzTopLeft, dptzBottomRight);
 
-            if (shape.FillColor != default)
+            Rect rect = Rect.Intersect(dptzRect, reqRect);
+            if (rect == Rect.Empty)
+                return;
+
+            rect.X = rect.X - dptzRect.X;
+            rect.Y = rect.Y - dptzRect.Y;
+
+            int x1 = (int)rect.TopLeft.X;
+            int y1 = (int)rect.TopLeft.Y;
+            int x2 = (int)rect.BottomRight.X;
+            int y2 = (int)rect.BottomRight.Y;
+
+            if (x2 > x1 && y2 > y1)
             {
-                _canvasViewModel.OverlayBitmap.FillRectangle(
-                    (int)topLeft.X + 1,
-                    (int)topLeft.Y + 1,
-                    (int)bottomRight.X,
-                    (int)bottomRight.Y,
-                    shape.FillColor);
+                _canvasViewModel.OverlayBitmap.DrawRectangle(x1, y1, x2, y2, shape.BorderColor);
+
+                if (shape.FillColor != default)
+                {
+                    x1 += 1;
+                    y1 += 1;
+
+                    if (x2 > x1 && y2 > y1)
+                        _canvasViewModel.OverlayBitmap.FillRectangle(x1, y1, x2, y2, shape.FillColor);
+                }
             }
         }
     }
