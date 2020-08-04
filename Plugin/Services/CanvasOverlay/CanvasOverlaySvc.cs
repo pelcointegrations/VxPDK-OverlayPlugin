@@ -162,14 +162,6 @@ namespace PluginNs.Services.CanvasOverlay
             rect.X = rect.X - dptzRect.X;
             rect.Y = rect.Y - dptzRect.Y;
 
-            // Determine multiplier (when dptz is being used)
-            //double normal = RightSideUpWidth * RightSideUpHeight;
-            //double dptz = dptzRect.Width * dptzRect.Height;
-            //double multiplier = normal / dptz;
-
-            // it seems as though the multiplier above should be able to calculate how much larger the shape should be, however it makes it slightly
-            // bigger and bigger and bigger the more you zoom in.
-
             double multiplier = 1;
 
             int x1 = (int)(rect.TopLeft.X * multiplier);
