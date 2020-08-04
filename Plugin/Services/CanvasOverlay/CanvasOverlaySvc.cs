@@ -162,7 +162,8 @@ namespace PluginNs.Services.CanvasOverlay
             rect.X = rect.X - dptzRect.X;
             rect.Y = rect.Y - dptzRect.Y;
 
-            double multiplier = 1;
+            // Determine multiplier (when dptz is being used)
+            double multiplier = RightSideUpWidth / dptzRect.Width;
 
             int x1 = (int)(rect.TopLeft.X * multiplier);
             int y1 = (int)(rect.TopLeft.Y * multiplier);
