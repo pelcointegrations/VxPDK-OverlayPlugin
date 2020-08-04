@@ -143,26 +143,39 @@ namespace PluginNs.Services.CanvasOverlay
 
         private void DrawRectangle(RectangleShape shape)
         {
-            // Decide where to draw the rect considering dptz
+            // Get coord values for the shape request
             var reqTopLeft = new Point(shape.TopLeft.X * RightSideUpWidth, shape.TopLeft.Y * RightSideUpHeight);
             var reqBottomRight = new Point(shape.BottomRight.X * RightSideUpWidth, shape.BottomRight.Y * RightSideUpHeight);
             var reqRect = new Rect(reqTopLeft, reqBottomRight);
 
+            // Get coord values for dptz
             var dptzTopLeft = new Point(_normalizedDptzWindow.TopLeft.X * RightSideUpWidth, _normalizedDptzWindow.TopLeft.Y * RightSideUpHeight);
             var dptzBottomRight = new Point(_normalizedDptzWindow.BottomRight.X * RightSideUpWidth, _normalizedDptzWindow.BottomRight.Y * RightSideUpHeight);
             var dptzRect = new Rect(dptzTopLeft, dptzBottomRight);
 
+            // If no intersection, no need to draw
             Rect rect = Rect.Intersect(dptzRect, reqRect);
             if (rect == Rect.Empty)
                 return;
 
+            // Adjust the overlays to the dptz area
             rect.X = rect.X - dptzRect.X;
             rect.Y = rect.Y - dptzRect.Y;
 
-            int x1 = (int)rect.TopLeft.X;
-            int y1 = (int)rect.TopLeft.Y;
-            int x2 = (int)rect.BottomRight.X;
-            int y2 = (int)rect.BottomRight.Y;
+            // Determine multiplier (when dptz is being used)
+            //double normal = RightSideUpWidth * RightSideUpHeight;
+            //double dptz = dptzRect.Width * dptzRect.Height;
+            //double multiplier = normal / dptz;
+
+            // it seems as though the multiplier above should be able to calculate how much larger the shape should be, however it makes it slightly
+            // bigger and bigger and bigger the more you zoom in.
+
+            double multiplier = 1;
+
+            int x1 = (int)(rect.TopLeft.X * multiplier);
+            int y1 = (int)(rect.TopLeft.Y * multiplier);
+            int x2 = (int)(rect.BottomRight.X * multiplier);
+            int y2 = (int)(rect.BottomRight.Y * multiplier);
 
             if (x2 > x1 && y2 > y1)
             {
